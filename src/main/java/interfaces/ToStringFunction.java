@@ -37,19 +37,49 @@ public interface ToStringFunction<T> extends Function<T, String> {
     @FunctionalInterface
     interface StackPrinter {
 
+        /**
+         * @param es the {@link StackTraceElement} array to parsed on to a {@link String}.
+         * @param range defines the portion/range of the array to be computed.
+         * @see Arrays.ViewRange
+         * */
         String toString(StackTraceElement[] es, Arrays.ViewRange range);
 
+        /**
+         * @param es the {@link StackTraceElement} array to parsed on to a {@link String}.
+         * @implNote will use {@link Arrays.ViewRange#all} by default.
+         * */
         default String toStringAll(StackTraceElement[] es) {
             return toString(es, Arrays.ViewRange.all);
         }
 
         String prefix = "\n >> Provenance = [\n >> at: ", join = "\n >> at: ", suffix = "\n] <<";
+
+
+        /**
+         * Default {@link StackPrinter} formatter that applies {@link Arrays#toString(String, Object[], String, String, int, int)}
+         * with the {@link Arrays.ViewRange} variation
+         * Using the values:
+         * <ul>
+         *     <li>
+         *         {@code prefix} = {@link #prefix}
+         *     </li>
+         *     <li>
+         *         {@code join} = {@link #join}
+         *     </li>
+         *     <li>
+         *         {@code suffix} = {@link #suffix}
+         *     </li>
+         * </ul>
+         * */
         StackPrinter PROV = (es, viewRange) -> viewRange.apply(
                 es, (stackTraceElements, s, e) -> Arrays.toString(prefix, es, join, suffix, s, e)
         );
     }
 
     final class Collections {
+        private Collections() {}
+
+
         public static <X> String[] toStringArray(
                 Collection<X> source,
                 ToStringFunction<X> map
@@ -79,27 +109,37 @@ public interface ToStringFunction<T> extends Function<T, String> {
     }
 
     final class Arrays {
+        private Arrays() {}
 
+        /**
+         * Maps an array to a {@link String} array.
+         * @param source the source array.
+         * @param map the function to be applied to each element.
+         * */
         public static <E> String[] toStringArray(
-                E[] from, ToStringFunction<E> map
+                E[] source, ToStringFunction<E> map
         ) {
             int length;
-            if (from == null || (length = from.length) == 0) return template.clone();
+            if (source == null || (length = source.length) == 0) return template.clone();
             final String[] res = new String[length];
             for (int i = 0; i < length; i++) {
-                res[i] = map.apply(from[i]);
+                res[i] = map.apply(source[i]);
             }
             return res;
         }
 
+        /**
+         * Maps an array to a {@link String[]} by applying {@link Object#toString()} on each element.
+         * @param source the source array.
+         * */
         public static <E> String[] toStringArray(
-                E[] from
+                E[] source
         ) throws NullPointerException {
             int length;
-            if (from == null || (length = from.length) == 0) return template.clone();
+            if (source == null || (length = source.length) == 0) return template.clone();
             final String[] res = new String[length];
             for (int i = 0; i < length; i++) {
-                res[i] = from[i].toString();
+                res[i] = source[i].toString();
             }
             return res;
         }
@@ -116,37 +156,46 @@ public interface ToStringFunction<T> extends Function<T, String> {
                 ;
 
         /**
-         * @param to = non-inclusive
+         * Formats a source array to a {@link String} following the convention specified at {@link java.util.Arrays#toString(Object[])}
+         * @param source the array to be mapped.
+         * @param from = the index to begin the formatting (inclusive)
+         * @param to = the index to end (non-inclusive).
+         * @apiNote Information about source's original length and previous indexes will be lost.
          * */
-        static<E> String toString(E[] es, int from, int to) {
+        public static<E> String toString(E[] source, int from, int to) {
             int length;
-            if (es == null || (length = es.length) == 0) return empty;
+            if (source == null || (length = source.length) == 0) return empty;
             int finalTo = Math.min(to, length);
             int finalFrom = Math.min(Math.max(from, 0), length - 1);
             StringBuilder sb = new StringBuilder(left);
             E next;
             sb.append(
-                    (next = es[finalFrom++]) == null ? nullS : next.toString()
+                    (next = source[finalFrom++]) == null ? nullS : next.toString()
             );
             for (; finalFrom < finalTo; finalFrom++) {
                 sb.append(comma)
-                        .append((next = es[finalFrom]) == null ? nullS : next.toString());
+                        .append((next = source[finalFrom]) == null ? nullS : next.toString());
             }
             return sb.append(right).toString();
         }
 
-        static<E> String toString(E[] es, ToStringFunction<E> map) {
+        /**
+         * Formats a source array to a {@link String} by applying the specified function on each element and following the convention defined at {@link java.util.Arrays#toString(Object[])}
+         * @param source the source array to be mapped.
+         * @param map the {@link ToStringFunction} to be applied to each element {@link E}
+         * */
+        static<E> String toString(E[] source, ToStringFunction<E> map) {
             int length;
-            if (es == null || (length = es.length) == 0) return empty;
+            if (source == null || (length = source.length) == 0) return empty;
             StringBuilder sb = new StringBuilder(left);
             int i = 0;
             sb.append(
-                    map.apply(es[i++])
+                    map.apply(source[i++])
             );
             for (; i < length; i++) {
                 sb.append(comma)
                         .append(
-                                map.apply(es[i])
+                                map.apply(source[i])
                         );
             }
             return sb.append(right).toString();
@@ -197,6 +246,9 @@ public interface ToStringFunction<T> extends Function<T, String> {
                 toLast
             }
 
+            /**
+             * The view will comprise the totality of the length of the source array.
+             * */
             public static ViewRange all = new ViewRange(
                     l -> {
                         int[] copy = RangeResolve.template.clone();
@@ -205,6 +257,9 @@ public interface ToStringFunction<T> extends Function<T, String> {
                         return copy;
                     }
             );
+            /**
+             * The view will return just the first element of the source array.
+             * */
             public static ViewRange first = new ViewRange(
                     l -> {
                         int[] copy = RangeResolve.template.clone();
@@ -213,6 +268,9 @@ public interface ToStringFunction<T> extends Function<T, String> {
                         return copy;
                     }
             );
+            /**
+             * The view will return the last element of the source array.
+             * */
             public static ViewRange last = new ViewRange(
                     l -> {
                         int[] copy = RangeResolve.template.clone();
@@ -300,7 +358,11 @@ public interface ToStringFunction<T> extends Function<T, String> {
             }
         }
 
-        static<E> String toString(E[] es, ViewRange range) {
+        /**
+         * Default implementation of {@link #toString(Object[], int, int)} where both parameters '{@code from}' and '{@code to}' have been replaced by {@link ViewRange}
+         * @see ViewRange
+         * */
+        public static<E> String toString(E[] es, ViewRange range) {
             return range.apply(es, ViewRange.StringResolve.getDefault());
         }
 
@@ -311,6 +373,19 @@ public interface ToStringFunction<T> extends Function<T, String> {
             );
         }
 
+        /**
+         * Default implementation of {@link #toString(Object[], String, int, int)}
+         * <p> where:
+         * <ul>
+         *     <li>
+         *         {@code from} = 0
+         *     </li>
+         *     <li>
+         *         {@code to} = length
+         *     </li>
+         * </ul>
+         *
+         * */
         public static String toString(String[] strings, String join) {
             return toString(
                     strings, join, 0, strings.length
@@ -318,26 +393,32 @@ public interface ToStringFunction<T> extends Function<T, String> {
         }
 
         /**
-         * @param to = non-inclusive
+         * Formats a source array to a {@link String} by applying a {@link ToStringFunction} on each element and
+         * following the convention specified at {@link java.util.Arrays#toString(Object[])}
+         * @param source the array to be mapped.
+         * @param map the mapping function
+         * @param from the index to begin the formatting (inclusive)
+         * @param to the index to end (non-inclusive).
+         * @apiNote Information about source's original length and previous indexes will be lost.
          * */
-        static<E> String toString(
-                E[] es
+        public static<E> String toString(
+                E[] source
                 , ToStringFunction<E> map
                 , int from
                 , int to
         ) {
             int length;
-            if (es == null || (length = es.length) == 0) return empty;
+            if (source == null || (length = source.length) == 0) return empty;
             StringBuilder sb = new StringBuilder(left);
             int finalTo = Math.min(to, length);
             int finalFrom = Math.min(Math.max(from, 0), length - 1);
             sb.append(
-                    map.apply(es[finalFrom++])
+                    map.apply(source[finalFrom++])
             );
             for (; finalFrom < finalTo; finalFrom++) {
                 sb.append(comma)
                         .append(
-                                map.apply(es[finalFrom])
+                                map.apply(source[finalFrom])
                         );
             }
             return sb.append(right).toString();
@@ -346,49 +427,85 @@ public interface ToStringFunction<T> extends Function<T, String> {
          * @param to = non-inclusive
          * @param prefix will be appended BEFORE the first {@link #left}
          * */
-        static<E> String toString(String prefix, E[] es, String join, ToStringFunction<E> map, int from, int to) {
+        public static<E> String toString(String prefix, E[] es, String join, ToStringFunction<E> map, int from, int to) {
             return toString(prefix.concat(left), es, join, right, map, from, to);
         }
 
-        static<E> String toString(String prefix, E[] es, String join, String suffix, ToStringFunction<E> map, int from, int to) {
+        /**
+         * Formats a source array to a {@link String} by applying a {@link ToStringFunction} on each element and
+         * following the convention:
+         * <p> 'prefix' + map.apply(firstElement) + 'join' + map.apply(secondElement) + 'join' + ... + map.apply(finalElement) + 'suffix';
+         * @param source the array to be mapped.
+         * @param map the mapping function
+         * @param from the index to begin the formatting (inclusive)
+         * @param to the index to end (non-inclusive).
+         * @apiNote Information about source's original length and previous indexes will be lost.
+         * */
+        public static<E> String toString(String prefix, E[] source, String join, String suffix, ToStringFunction<E> map, int from, int to) {
             int length;
-            if (es == null || (length = es.length) == 0) return empty;
+            if (source == null || (length = source.length) == 0) return empty;
             int finalTo = Math.min(to, length);
             int finalFrom = Math.min(Math.max(from, 0), length - 1);
             StringBuilder sb = new StringBuilder(prefix);
-            sb.append(map.apply(es[finalFrom++]));
+            sb.append(map.apply(source[finalFrom++]));
             for (; finalFrom < finalTo; finalFrom++) {
                 sb.append(join)
-                        .append(map.apply(es[finalFrom]));
+                        .append(map.apply(source[finalFrom]));
             }
             return sb.append(suffix).toString();
         }
 
-        static<E> String toString(String prefix, E[] es, String join, String suffix, int from, int to) {
+        /**
+         * Formats a source array to a {@link String} by applying an inlined {@link String#valueOf(Object)}
+         * following the convention:
+         * <p> 'prefix' + map.apply(firstElement) + 'join' + map.apply(secondElement) + 'join' + ... + map.apply(finalElement) + 'suffix';
+         * @param source the array to be mapped.
+         * @param from the index to begin the formatting (inclusive)
+         * @param to the index to end (non-inclusive).
+         * @apiNote Information about source's original length and previous indexes will be lost.
+         * */
+        public static<E> String toString(String prefix, E[] source, String join, String suffix, int from, int to) {
             int length;
-            if (es == null || (length = es.length) == 0) return empty;
+            if (source == null || (length = source.length) == 0) return empty;
             int finalTo = Math.min(to, length);
             int finalFrom = Math.min(Math.max(from, 0), length - 1);
             StringBuilder sb = new StringBuilder(prefix);
             E next;
             sb.append(
-                    (next = es[finalFrom++]) == null ? nullS : next.toString()
+                    (next = source[finalFrom++]) == null ? nullS : next.toString()
             );
             for (; finalFrom < finalTo; finalFrom++) {
                 sb.append(join)
-                        .append((next = es[finalFrom]) == null ? nullS : next.toString());
+                        .append((next = source[finalFrom]) == null ? nullS : next.toString());
             }
             return sb.append(suffix).toString();
         }
 
-        static<E> String toString(String prefix, E[] es, String join, int from, int to) {
+        /**
+         * Default implementation of {@link #toString(String, Object[], String, String, int, int)}
+         * <p> where:
+         * <ul>
+         *     <li>
+         *         {@code prefix} = {@link #left_2}
+         *     </li>
+         *     <li>
+         *         {@code suffix} = {@link #right}
+         *     </li>
+         * </ul>
+         * */
+        static<E> String toString(String prefix, E[] source, String join, int from, int to) {
             return toString(
-                    prefix.concat(left_2), es, join, right, from, to
+                    prefix.concat(left_2), source, join, right, from, to
             );
         }
 
-        static<E> String toString(E[] es, String join, ViewRange range) {
-            return range.apply(es,
+        /**
+         * Default implementation of {@link #toString(String, Object[], String, String, int, int)} that accepts a {@link ViewRange} as parameter,
+         * replacing the parameters '{@code from}' and '{@code to}'.
+         * @see ViewRange
+         * */
+        static<E> String toString(E[] source, String join, ViewRange range) {
+            return range.apply(source,
                     (es1, s, e) -> toString(es1, join, s, e)
             );
         }
@@ -400,14 +517,30 @@ public interface ToStringFunction<T> extends Function<T, String> {
             return toString(prefix.concat(left_2), es, comma, right, from, to);
         }
         /**
-         * Will default to {@link #left} as 'prefix' and {@link #right} as 'suffix'
+         * Default implementation of {@link #toString(String, Object[], String, String, int, int)}
+         * <p> Where:
+         * <ul>
+         *     <li>
+         *         {@code prefix} = {@link #left}
+         *     </li>
+         *     <li>
+         *         {@code suffix} = {@link #right}
+         *     </li>
+         * </ul>
          * */
-        static<E> String toString(E[] es, String join, int from, int to) {
-            return toString(left, es, join, right, from, to);
+        static<E> String toString(E[] source, String join, int from, int to) {
+            return toString(left, source, join, right, from, to);
         }
     }
 
+    /**
+     * Instance for lambda reference of {@link String#valueOf(Object)}
+     * */
     ToStringFunction<?> valueOf = String::valueOf;
+    /**
+     * Instance for lambda function of {@code s -> s;}
+     * This reference shares the same instance as {@link Functions#myIdentity()}
+     * */
     ToStringFunction<String> identity = new ToStringFunction<>() {
         final UnaryOperator<String> id = Functions.myIdentity();
         @Override
@@ -428,15 +561,24 @@ public interface ToStringFunction<T> extends Function<T, String> {
         }
     };
 
+    /**
+     * @return true if this == {@link #identity}
+     * */
     default boolean isIdentity() {
         return this == identity;
     }
 
+    /**
+     * @return reified reference of {@link #valueOf}
+     * */
     @SuppressWarnings("unchecked")
     static<T> ToStringFunction<T> valueOf() {
         return (ToStringFunction<T>) valueOf;
     }
 
+    /**
+     * @return true if this == {@link #valueOf}
+     * */
     default boolean isValueOf() {
         return this == valueOf;
     }
@@ -471,57 +613,75 @@ public interface ToStringFunction<T> extends Function<T, String> {
         FromLong valueOf = String::valueOf;
     }
 
-    static<E> String inspect(E[] es) {
+    /**
+     * Returns a {@link String} with specific details about the array's:
+     * <ul>
+     *     <li>
+     *         length
+     *     </li>
+     *     <li>
+     *         {@link Class}
+     *     </li>
+     *     <li>
+     *         Element index
+     *     </li>
+     * </ul>
+     * */
+    static<E> String inspect(E[] array) {
         int length;
-        if (es == null || (length = es.length) == 0) {
-            return es == null ? "Array is null" : "Array is empty";
+        if (array == null || (length = array.length) == 0) {
+            return array == null ? "Array is null" : "Array is empty";
         }
-        StringBuilder builder = getBuilder(es.getClass(), length);
+        StringBuilder builder = getBuilder(array.getClass(), length);
         for (int i = 0; i < length; i++) {
-            builder.append("\n [").append(i).append("] >> ").append(es[i]);
+            builder.append("\n [").append(i).append("] >> ").append(array[i]);
         }
         return builder.append("\n    }").toString();
     }
-
-    static<E> String inspect(E[] es, ToStringFunction<E> map) {
+    /**
+     * Similar behavior to {@link #inspect(Object[])} that applyies a {@link ToStringFunction} to each of the elements of the array.
+     * @param array the array to be inspected.
+     * @param map the function to be applied to each element.
+     * */
+    static<E> String inspect(E[] array, ToStringFunction<E> map) {
         int length;
-        if (es == null || (length = es.length) == 0) {
-            return es == null ? "Array is null" : "Array is empty";
+        if (array == null || (length = array.length) == 0) {
+            return array == null ? "Array is null" : "Array is empty";
         }
-        StringBuilder builder = getBuilder(es.getClass(), length);
+        StringBuilder builder = getBuilder(array.getClass(), length);
         for (int i = 0; i < length; i++) {
-            builder.append("\n [").append(i).append("] >> ").append(map.apply(es[i]));
+            builder.append("\n [").append(i).append("] >> ").append(map.apply(array[i]));
         }
         return builder.append("\n    }").toString();
     }
-    static<T> String inspect(double[] ts) {
-        return inspect(ts, FromDouble.valueOf);
+    static<T> String inspect(double[] doubles) {
+        return inspect(doubles, FromDouble.valueOf);
     }
-    static<T> String inspect(double[] ts, FromDouble toString) {
+    static<T> String inspect(double[] doubles, FromDouble toString) {
         int length;
-        if (ts == null || (length = ts.length) == 0) {
-            return ts == null ? "Array is null" : "Array is empty";
+        if (doubles == null || (length = doubles.length) == 0) {
+            return doubles == null ? "Array is null" : "Array is empty";
         }
-        StringBuilder builder = getBuilder(ts.getClass(), length);
+        StringBuilder builder = getBuilder(doubles.getClass(), length);
         for (int i = 0; i < length; i++) {
-            builder.append("\n [").append(i).append("] >> ").append(toString.asString(ts[i]));
+            builder.append("\n [").append(i).append("] >> ").append(toString.asString(doubles[i]));
         }
         return builder.append("\n    }").toString();
     }
-    static<T> String inspect(long[] ts) {
-        return inspect(ts, FromLong.valueOf);
+    static<T> String inspect(long[] longs) {
+        return inspect(longs, FromLong.valueOf);
     }
-    static<T> String inspect(int[] ts) {
-        return inspect(ts, FromInt.valueOf);
+    static<T> String inspect(int[] ints) {
+        return inspect(ints, FromInt.valueOf);
     }
-    static<T> String inspect(long[] ts, FromLong toString) {
+    static<T> String inspect(long[] longs, FromLong toString) {
         int length;
-        if (ts == null || (length = ts.length) == 0) {
-            return ts == null ? "Array is null" : "Array is empty";
+        if (longs == null || (length = longs.length) == 0) {
+            return longs == null ? "Array is null" : "Array is empty";
         }
-        StringBuilder builder = getBuilder(ts.getClass(), length);
+        StringBuilder builder = getBuilder(longs.getClass(), length);
         for (int i = 0; i < length; i++) {
-            builder.append("\n [").append(i).append("] >> ").append(toString.asString(ts[i]));
+            builder.append("\n [").append(i).append("] >> ").append(toString.asString(longs[i]));
         }
         return builder.append("\n    }").toString();
     }
@@ -539,14 +699,14 @@ public interface ToStringFunction<T> extends Function<T, String> {
         );
     }
 
-    static<T> String inspect(int[] ts, FromInt toString) {
+    static<T> String inspect(int[] ints, FromInt toString) {
         int length;
-        if (ts == null || (length = ts.length) == 0) {
-            return ts == null ? "Array is null" : "Array is empty";
+        if (ints == null || (length = ints.length) == 0) {
+            return ints == null ? "Array is null" : "Array is empty";
         }
-        StringBuilder builder = getBuilder(ts.getClass(), length);
+        StringBuilder builder = getBuilder(ints.getClass(), length);
         for (int i = 0; i < length; i++) {
-            builder.append("\n [").append(i).append("] >> ").append(toString.asString(ts[i]));
+            builder.append("\n [").append(i).append("] >> ").append(toString.asString(ints[i]));
         }
         return builder.append("\n    }").toString();
     }
@@ -557,13 +717,13 @@ public interface ToStringFunction<T> extends Function<T, String> {
             return ts == null ? "Array is null" : "Array is empty";
         }
         StringBuilder builder = getStringBuilder("double[][]", length);
-            for (int i = 0; i < length; i++) {
-                double[] aDs = ts[i];
-                builder.append("\n <*> row: [").append(i).append("]");
-                for (int j = 0; j < aDs.length; j++) {
-                    builder.append("\n    [").append(j).append("] >> ").append(aDs[j]);
-                }
+        for (int i = 0; i < length; i++) {
+            double[] aDs = ts[i];
+            builder.append("\n <*> row: [").append(i).append("]");
+            for (int j = 0; j < aDs.length; j++) {
+                builder.append("\n    [").append(j).append("] >> ").append(aDs[j]);
             }
+        }
         return builder.append("\n    }").toString();
     }
 
@@ -573,13 +733,13 @@ public interface ToStringFunction<T> extends Function<T, String> {
             return ts == null ? "Array is null" : "Array is empty";
         }
         StringBuilder builder = getBuilder(ts.getClass(), length);
-            for (int i = 0; i < length; i++) {
-                E[] aDs = ts[i];
-                builder.append("\n <*> row: [").append(i).append("]");
-                for (int j = 0; j < aDs.length; j++) {
-                    builder.append("\n    [").append(j).append("] >> ").append(aDs[j]);
-                }
+        for (int i = 0; i < length; i++) {
+            E[] aDs = ts[i];
+            builder.append("\n <*> row: [").append(i).append("]");
+            for (int j = 0; j < aDs.length; j++) {
+                builder.append("\n    [").append(j).append("] >> ").append(aDs[j]);
             }
+        }
         return builder.append("\n    }").toString();
     }
 

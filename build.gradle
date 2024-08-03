@@ -10,12 +10,19 @@ def projectName = project.property('projectName')
 import com.vanniktech.maven.publish.SonatypeHost
 
 mavenPublishing {
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, true)
+//    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, true)
+    if (version.endsWith("SNAPSHOT")) {
+        publishToMavenCentral(
+                new SonatypeHost('https://oss.sonatype.org/content/repositories/snapshots/', false)
+        )
+    } else {
+        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, true)
+    }
     signAllPublications()
-    coordinates(group, projectName, version)
+    coordinates(group, 'interfaces', version)
     pom {
         name.set(projectName)
-        description.set("A description of my project")
+        description.set("Added functional interfaces for the Java Environment.")
         url.set("https://github.com/Skylarkarms/Interfaces")
         licenses {
             license {

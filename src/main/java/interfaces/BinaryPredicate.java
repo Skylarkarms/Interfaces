@@ -27,6 +27,10 @@ public interface BinaryPredicate<T> extends BiPredicate<T, T> {
 
     @FunctionalInterface
     interface Unary<T> extends BinaryPredicate<T> {
+        /**
+         * default implementation of {@link #test(Object, Object)} where the second parameter ('prev') will be ignored
+         * @param next the parameter to be tested
+         * */
         boolean test(T next);
         @Override
         default boolean test(T next, T prev) {
@@ -34,11 +38,17 @@ public interface BinaryPredicate<T> extends BiPredicate<T, T> {
         }
     }
 
+    /**
+     * Maps a {@link Predicate} into a {@link BinaryPredicate} where the only parameter to be tested will be {@code 'next'}
+     * @param predicate the function to be mapped.
+     * */
     static<T> BinaryPredicate<T> fromPredicate(Predicate<T> predicate) {
         return (next, prev) -> predicate.test(next);
     }
 
-    /**@return true if either of them is null, BUT not the other, <p>
+    /**
+     * @param test the {@link BinaryPredicate} function to be applied on non-null objects.
+     * @return true if either of them is null, BUT not the other, <p>
      * OR true if both are null <p>
      * else proceeds to perform the test*/
     static<T> BinaryPredicate<T> nonNullTest(BinaryPredicate<T> test) {
@@ -111,10 +121,20 @@ public interface BinaryPredicate<T> extends BiPredicate<T, T> {
         }
     };
 
+    /**
+     * Overridden by {@link BinaryPredicate#defaultFalse}.
+     * Used for fast default inference.
+     * @implNote Should not override, unless custom default implementation.
+     * */
     default boolean isAlwaysFalse() {
         return false;
     }
 
+    /**
+     * Overridden by {@link BinaryPredicate#defaultTrue}.
+     * Used for fast default inference.
+     * @implNote Should not override, unless custom default implementation.
+     * */
     default boolean isAlwaysTrue() {
         return false;
     }
@@ -142,9 +162,17 @@ public interface BinaryPredicate<T> extends BiPredicate<T, T> {
     @FunctionalInterface
     interface ArrEquals<T> extends BinaryPredicate<T[]> {}
 
+    /**
+     * lambda instance for {@link Arrays#equals(Object[], Object[])}
+     * */
     ArrEquals<?> arrEquals = (ArrEquals<Object>) Arrays::equals;
+    /**
+     * lambda instance for {@link Arrays#equals(long[], long[])}
+     * */
     BinaryPredicate<long[]> longArrEquals = Arrays::equals;
-
+    /**
+     * lambda instance for {@link Objects#equals(Object, Object)}
+     * */
     BinaryPredicate<?> equalFun = Objects::equals;
 
     /**
