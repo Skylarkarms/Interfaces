@@ -10,7 +10,6 @@ def projectName = project.property('projectName')
 import com.vanniktech.maven.publish.SonatypeHost
 
 mavenPublishing {
-//    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, true)
     if (version.endsWith("SNAPSHOT")) {
         publishToMavenCentral(
                 new SonatypeHost('https://oss.sonatype.org/content/repositories/snapshots/', false)

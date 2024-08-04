@@ -23,13 +23,13 @@ public interface ToStringFunction<T> extends Function<T, String> {
      * Uses {@link Arrays#toString(String, Object[], String, String, int, int)} and references the next variables:
      * <ul>
      *     <li>
-     *         {@link #prefix}
+     *         {@link Params#prefix}
      *     </li>
      *     <li>
-     *         {@link #join}
+     *         {@link Params#join}
      *     </li>
      *     <li>
-     *         {@link #suffix}
+     *         {@link Params#suffix}
      *     </li>
      * </ul>
      * These variables can be changed at any given time.
@@ -52,8 +52,16 @@ public interface ToStringFunction<T> extends Function<T, String> {
             return toString(es, Arrays.ViewRange.all);
         }
 
-        String prefix = "\n >> Provenance = [\n >> at: ", join = "\n >> at: ", suffix = "\n] <<";
+        final class Params {
+            private Params() {
+            }
 
+            String prefix = "\n >> Provenance = [\n >> at: ",
+                    join = "\n >> at: ",
+                    suffix = "\n] <<";
+        }
+
+        Params params = new Params();
 
         /**
          * Default {@link StackPrinter} formatter that applies {@link Arrays#toString(String, Object[], String, String, int, int)}
@@ -61,18 +69,21 @@ public interface ToStringFunction<T> extends Function<T, String> {
          * Using the values:
          * <ul>
          *     <li>
-         *         {@code prefix} = {@link #prefix}
+         *         {@code prefix} = {@link Params#prefix}
          *     </li>
          *     <li>
-         *         {@code join} = {@link #join}
+         *         {@code join} = {@link Params#join}
          *     </li>
          *     <li>
-         *         {@code suffix} = {@link #suffix}
+         *         {@code suffix} = {@link Params#suffix}
          *     </li>
          * </ul>
          * */
         StackPrinter PROV = (es, viewRange) -> viewRange.apply(
-                es, (stackTraceElements, s, e) -> Arrays.toString(prefix, es, join, suffix, s, e)
+                es, (stackTraceElements, s, e) -> {
+                    Params p = params;
+                    return Arrays.toString(p.prefix, es, p.join, p.suffix, s, e);
+                }
         );
     }
 

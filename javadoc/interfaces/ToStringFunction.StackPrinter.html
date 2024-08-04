@@ -44,7 +44,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -89,19 +89,34 @@ loadScripts(document, 'script');</script>
  Uses <a href="ToStringFunction.Arrays.html#toString(java.lang.String,E%5B%5D,java.lang.String,java.lang.String,int,int)"><code>ToStringFunction.Arrays.toString(String, Object[], String, String, int, int)</code></a> and references the next variables:
  <ul>
      <li>
-         <a href="#prefix"><code>prefix</code></a>
+         <code>ToStringFunction.StackPrinter.Params.prefix</code>
      </li>
      <li>
-         <a href="#join"><code>join</code></a>
+         <code>ToStringFunction.StackPrinter.Params.join</code>
      </li>
      <li>
-         <a href="#suffix"><code>suffix</code></a>
+         <code>ToStringFunction.StackPrinter.Params.suffix</code>
      </li>
  </ul>
  These variables can be changed at any given time.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<li>
+<section class="nested-class-summary" id="nested.class.summary">
+<h2>Nested Class Summary</h2>
+<div class="caption"><span>Nested Classes</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Interface</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><span class="member-name-link"><a href="ToStringFunction.StackPrinter.Params.html" title="class in interfaces">ToStringFunction.StackPrinter.Params</a></span></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
 <!-- =========== FIELD SUMMARY =========== -->
 <li>
 <section class="field-summary" id="field.summary">
@@ -111,33 +126,27 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color"><code><span class="member-name-link"><a href="#join">join</a></span></code></div>
+<div class="col-first even-row-color"><code>static <a href="ToStringFunction.StackPrinter.Params.html" title="class in interfaces">ToStringFunction.StackPrinter.Params</a></code></div>
+<div class="col-second even-row-color"><code><span class="member-name-link"><a href="#params">params</a></span></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><span class="member-name-link"><a href="#prefix">prefix</a></span></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>static <a href="ToStringFunction.StackPrinter.html" title="interface in interfaces">ToStringFunction.StackPrinter</a></code></div>
-<div class="col-second even-row-color"><code><span class="member-name-link"><a href="#PROV">PROV</a></span></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code>static <a href="ToStringFunction.StackPrinter.html" title="interface in interfaces">ToStringFunction.StackPrinter</a></code></div>
+<div class="col-second odd-row-color"><code><span class="member-name-link"><a href="#PROV">PROV</a></span></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Default <a href="ToStringFunction.StackPrinter.html" title="interface in interfaces"><code>ToStringFunction.StackPrinter</code></a> formatter that applies <a href="ToStringFunction.Arrays.html#toString(java.lang.String,E%5B%5D,java.lang.String,java.lang.String,int,int)"><code>ToStringFunction.Arrays.toString(String, Object[], String, String, int, int)</code></a>
  with the <a href="ToStringFunction.Arrays.ViewRange.html" title="class in interfaces"><code>ToStringFunction.Arrays.ViewRange</code></a> variation
  Using the values:
  
      
-         <code>prefix</code> = <a href="#prefix"><code>prefix</code></a>
+         <code>prefix</code> = <code>ToStringFunction.StackPrinter.Params.prefix</code>
      
      
-         <code>join</code> = <a href="#join"><code>join</code></a>
+         <code>join</code> = <code>ToStringFunction.StackPrinter.Params.join</code>
      
      
-         <code>suffix</code> = <a href="#suffix"><code>suffix</code></a>
+         <code>suffix</code> = <code>ToStringFunction.StackPrinter.Params.suffix</code>
      
  </div>
 </div>
-<div class="col-first odd-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color"><code><span class="member-name-link"><a href="#suffix">suffix</a></span></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -174,33 +183,9 @@ loadScripts(document, 'script');</script>
 <h2>Field Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="prefix">
-<h3>prefix</h3>
-<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">prefix</span></div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd><a href="../constant-values.html#interfaces.ToStringFunction.StackPrinter.prefix">Constant Field Values</a></dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="join">
-<h3>join</h3>
-<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">join</span></div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd><a href="../constant-values.html#interfaces.ToStringFunction.StackPrinter.join">Constant Field Values</a></dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="suffix">
-<h3>suffix</h3>
-<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">suffix</span></div>
-<dl class="notes">
-<dt>See Also:</dt>
-<dd><a href="../constant-values.html#interfaces.ToStringFunction.StackPrinter.suffix">Constant Field Values</a></dd>
-</dl>
+<section class="detail" id="params">
+<h3>params</h3>
+<div class="member-signature"><span class="modifiers">static final</span>&nbsp;<span class="return-type"><a href="ToStringFunction.StackPrinter.Params.html" title="class in interfaces">ToStringFunction.StackPrinter.Params</a></span>&nbsp;<span class="element-name">params</span></div>
 </section>
 </li>
 <li>
@@ -212,13 +197,13 @@ loadScripts(document, 'script');</script>
  Using the values:
  <ul>
      <li>
-         <code>prefix</code> = <a href="#prefix"><code>prefix</code></a>
+         <code>prefix</code> = <code>ToStringFunction.StackPrinter.Params.prefix</code>
      </li>
      <li>
-         <code>join</code> = <a href="#join"><code>join</code></a>
+         <code>join</code> = <code>ToStringFunction.StackPrinter.Params.join</code>
      </li>
      <li>
-         <code>suffix</code> = <a href="#suffix"><code>suffix</code></a>
+         <code>suffix</code> = <code>ToStringFunction.StackPrinter.Params.suffix</code>
      </li>
  </ul></div>
 </section>
