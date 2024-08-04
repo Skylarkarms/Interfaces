@@ -19,3 +19,27 @@ This artifact is divided into two sub-packages:
 - .utils: Which contain lambda instances that do not necessarily belong to the interfaces provided by this artifact.
     - [Consumers](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/utils/Consumers.html)
     - [Functions](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/utils/Functions.html)
+
+###Implementation
+int your `build.gradle` file
+```groovy
+repositories {
+mavenCentral()
+}
+
+dependencies {
+implementation 'io.github.skylarkarms:interfaces:1.0.1'
+}
+```
+
+or in your `POM.xml`
+```xml
+<dependencies>
+<dependency>
+<groupId>io.github.skylarkarms</groupId>
+<artifactId>interfaces</artifactId>
+<version>1.0.1</version>
+</dependency>
+</dependencies>
+```
+
