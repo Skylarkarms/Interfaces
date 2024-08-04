@@ -10,9 +10,9 @@ This artifact is divided into two sub-packages:
 - .interfaces: Which contain the main functional interfaces.
     - [BinaryFunction](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/BinaryFunction.html)
     - [BinaryPredicate](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/BinaryPredicate.html)
-    - [BinaryBooleanOperator](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/BinaryBooleanOperator.html)
+    - [BooleanOperator](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/BooleanOperator.html)
     - [OnSwapped](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/OnSwapped.html)
-    - [Register](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/Register.html)
+    - [Producer](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/Producer.html)
     - [StringSupplier](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/StringSupplier.html)
     - [StringUnaryOperator](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/StringUnaryOperator.html)
     - [ToStringFunction](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/interfaces/ToStringFunction.html)
@@ -20,26 +20,25 @@ This artifact is divided into two sub-packages:
     - [Consumers](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/utils/Consumers.html)
     - [Functions](https://html-preview.github.io/?url=https://github.com/Skylarkarms/Interfaces/blob/main/javadoc/utils/Functions.html)
 
-###Implementation
+### Implementation
 int your `build.gradle` file
 ```groovy
 repositories {
-mavenCentral()
+   mavenCentral()
 }
 
 dependencies {
-implementation 'io.github.skylarkarms:interfaces:1.0.1'
+   implementation 'io.github.skylarkarms:interfaces:1.0.1'
 }
 ```
 
 or in your `POM.xml`
 ```xml
 <dependencies>
-<dependency>
-<groupId>io.github.skylarkarms</groupId>
-<artifactId>interfaces</artifactId>
-<version>1.0.1</version>
-</dependency>
+   <dependency>
+      <groupId>io.github.skylarkarms</groupId>
+      <artifactId>interfaces</artifactId>
+      <version>1.0.1</version>
+   </dependency>
 </dependencies>
 ```
-
