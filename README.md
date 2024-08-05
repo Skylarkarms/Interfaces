@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-   implementation 'io.github.skylarkarms:interfaces:1.0.1'
+   implementation 'io.github.skylarkarms:interfaces:1.0.2'
 }
 ```
 
@@ -38,7 +38,7 @@ or in your `POM.xml`
    <dependency>
       <groupId>io.github.skylarkarms</groupId>
       <artifactId>interfaces</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
    </dependency>
 </dependencies>
 ```

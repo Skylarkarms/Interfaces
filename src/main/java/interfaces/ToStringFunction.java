@@ -56,7 +56,7 @@ public interface ToStringFunction<T> extends Function<T, String> {
             private Params() {
             }
 
-            String prefix = "\n >> Provenance = [\n >> at: ",
+            public String prefix = "\n >> Provenance = [\n >> at: ",
                     join = "\n >> at: ",
                     suffix = "\n] <<";
         }
